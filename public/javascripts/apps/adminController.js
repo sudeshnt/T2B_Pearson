@@ -67,10 +67,38 @@ function manageEmployeesController($scope, modalSrv) {
         $scope.newEmployee = false;
         modalSrv.showModal(modalDefaults, {});
     };
+
 };
 
-function manageGroupsController($scope, modalSrv) {
+function manageGroupsController($scope, modalSrv, comSrv, FKey, RKey) {
 
+    $scope.newGroup = {};
+    $scope.updateGroup = {};
+
+    init();
+
+    function init() {
+        loadGroups();
+    };
+    function loadGroups(){
+        var reqJSON={
+            corporateId:1,
+            authObj:{
+                "functionId":FKey.GET_CORPORATE_GROUPS_BY_COOP_ID.FUNCTION_ID,
+                "moduleId":RKey.CORPORATE_SERVICE.SERVICE_ID,
+                "requestId":RKey.CORPORATE_SERVICE.FUNCTION.GET_CORPORATE_SERVICE_GROUPS_BY_COOP_ID,
+                "userToken": '',
+                "userName": '',
+                "orgId": '',
+                "branchId": ''
+            }
+        };
+        comSrv.postCall('/',reqJSON, function (status, data) {
+            if (status == 200 || status == 201) {
+               $scope.allGroups = data;
+            }
+        });
+    };
     $scope.addEntitlement = function () { //console.log(user)
         var entitlementModalDefaults = {
             backdrop: false,
@@ -261,8 +289,122 @@ function manageGroupsController($scope, modalSrv) {
              };*/
         };
     };
-};
 
+    var addUserModalDefaults = {
+        backdrop: false,
+        keyboard: true,
+        modalFade: true,
+        templateUrl: 'addGroupModal.html',
+        size: 'md',
+        scope: $scope,
+        controller: addUpdateGroupsController
+    };
+    var editUserModalDefaults = {
+        backdrop: false,
+        keyboard: true,
+        modalFade: true,
+        templateUrl: 'editGroupModal.html',
+        size: 'md',
+        scope: $scope,
+        controller: addUpdateGroupsController
+    };
+    function addUpdateGroupsController($modalInstance) {
+        $scope.modalOptions = {};
+        $scope.addOrUpdateUserStatus = "add";
+        // add or update group details
+        $scope.modalOptions.close = function (result) {
+            $modalInstance.dismiss('cancel');
+        };
+        $scope.modalOptions.addGroup = function () {
+            console.log($scope.newGroup,FKey.CREATE_NEW_CORPORATE_GROUP.FUNCTION_ID, RKey.CORPORATE_SERVICE.SERVICE_ID);
+            var reqJSON = {
+                newGroup: {
+                    "corporateId":$scope.newGroup.corporateId,
+                    "groupName":$scope.newGroup.groupName,
+                    "groupBuyingPower":$scope.newGroup.groupBuyingPower,
+                    "userDefaultBuyingPower": $scope.newGroup.empBuyingPower,
+                    "isApprovalRequred": $scope.newGroup.isApprovalRequired,
+                },
+                authObj: {
+                    "functionId": FKey.CREATE_NEW_CORPORATE_GROUP.FUNCTION_ID,
+                    "moduleId": RKey.CORPORATE_SERVICE.SERVICE_ID,
+                    "requestId": RKey.CORPORATE_SERVICE.FUNCTION.POST_CORPORATE_SERVICE_ADD_NEW_GROUP,
+                    "userToken": '',
+                    "userName": '',
+                    "orgId": '',
+                    "branchId": ''
+                }
+            };
+            comSrv.postCall('/', reqJSON, function (status, data) {
+                if (status == 200) {
+                    comSrv.popMessage('Corporate Group Successfully Added', 'success');
+
+                    $scope.modalOptions.close();
+                } else {
+                    if (data.Error == 3) {
+                        comSrv.popMessage(data.rejectMessage, 'note');
+                    } else if (status == 500) {
+                        comSrv.popMessage('Internal server error', 'error');
+                    }
+                }
+            });
+        };
+        $scope.modalOptions.editGroup = function () {
+            var reqJSON = {
+                updateGroup: {
+                    "groupId":$scope.updateGroup.groupId,
+                    "corporateId":$scope.updateGroup.corporateId,
+                    "groupName":$scope.updateGroup.groupName,
+                    "groupBuyingPower":$scope.updateGroup.groupBuyingPower,
+                    "userDefaultBuyingPower": $scope.updateGroup.empBuyingPower,
+                    "isApprovalRequred": $scope.updateGroup.isApprovalRequired,
+                },
+                authObj: {
+                    "functionId": FKey.UPDATE_CORPORATE_GROUP_BY_GROUP_ID.FUNCTION_ID,
+                    "moduleId": RKey.CORPORATE_SERVICE.SERVICE_ID,
+                    "requestId": RKey.CORPORATE_SERVICE.FUNCTION.PUT_CORPORATE_SERVICE_UPDATE_GROUP,
+                    "userToken": '',
+                    "userName": '',
+                    "orgId": '',
+                    "branchId": ''
+                }
+            };
+             comSrv.postCall('/', reqJSON, function (status, data) {
+                 if (status == 200) {
+                     comSrv.popMessage('Corporate Group Successfully Updated', 'success');
+                     $scope.modalOptions.close();
+                 }else {
+                     if (data.Error == 3) {
+                         comSrv.popMessage(data.rejectMessage, 'note');
+                     } else if (status == 500) {
+                         comSrv.popMessage('Internal server error', 'error');
+                     }
+                 }
+             });
+        };
+
+    };
+
+    $scope.clickAddNew = function () {
+        $scope.selectedEmployee = {};
+        $scope.empLogo = {};
+        $scope.empLogo.imageUri = "https://s3-ap-southeast-1.amazonaws.com/t2buy/dYfHPRJh-no-image.png";
+        $scope.mode = 1;
+        $scope.functionKey = 1;
+        $scope.newEmployee = false;
+        modalSrv.showModal(addUserModalDefaults, {});
+    };
+    $scope.editDetails = function (group) {
+        $scope.updateGroup.groupId = group.groupId;
+        $scope.updateGroup.corporateId = group.corporateId;
+        $scope.updateGroup.groupName = group.groupName;
+        $scope.updateGroup.groupBuyingPower = group.groupBuyingPower;
+        $scope.updateGroup.empBuyingPower = group.userDefaultBuyingPower;
+        $scope.updateGroup.isApprovalRequired = group.isApprovalRequred;
+        modalSrv.showModal(editUserModalDefaults, {});
+    };
+
+};
 
 function ProfilesTabController($scope, $state){
     $scope.tabs = [
@@ -292,6 +434,10 @@ function ProfilesTabController($scope, $state){
             tab.active = $scope.active(tab.route);
         });
     });
+}
+
+function manageProfilesController($scope){
+
 }
 
 function manageRestaurantsController($scope){
@@ -475,3 +621,12 @@ function manageRestaurantsController($scope){
     /* };*/
 
 }
+
+function logoutController($scope, $state, $http, $location, comSrv) {
+    logout();
+    function logout() {
+        localStorage.clear();
+        window.location = $location.protocol() + "://" + $location.host() + ":" + $location.port() + "/login";
+    }
+
+};

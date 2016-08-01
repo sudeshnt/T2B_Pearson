@@ -3,7 +3,7 @@
 */
 var app=angular.module('foodAdmin', ['mutonCommunicationSrv','modalService',
     'shoppingCartService','ui.router','ui.bootstrap','ngStorage','toaster',
-    'displayLabels_en','displayLabels_si', 'ngDialogSrv','flow','awsServices','clientSocket',
+    'displayLabels_en','displayLabels_si', 'ngDialogSrv','flow','awsServices',
     'ngMessages','storageService','ngSanitize', 'MassAutoComplete','functionKey','requestKey']);
 app.config(['$stateProvider','$urlRouterProvider','$locationProvider',
     function($stateProvider, $urlRouterProvider,$locationProvider) {
@@ -71,12 +71,12 @@ app.config(['$stateProvider','$urlRouterProvider','$locationProvider',
             .state('profile.user',{
                 url:'/profile.user',
                 templateUrl:'/partials/apps/foodAdmin/userProfileTab.html',
-                controller:''
+                controller:manageProfilesController
             })
             .state('profile.company',{
                 url:'/profile.company',
                 templateUrl:'/partials/apps/foodAdmin/companyProfileTab.html',
-                controller:''
+                controller:manageProfilesController
             })
             .state('mgRestaurants',{
                 url:'/mgRestaurants',
@@ -88,6 +88,19 @@ app.config(['$stateProvider','$urlRouterProvider','$locationProvider',
                 templateUrl:'/partials/apps/foodAdmin/reports/orderCancellationReport.html',
                 controller:orderReportsController
             })
+            .state('mgDomains',{
+                url:'/mgDomains',
+                templateUrl:'/partials/apps/foodAdmin/manageDomainsPage.html',
+                controller:orderReportsController
+            })
+            .state('logout',{
+                url:'/logout',
+                templateUrl:'',
+                controller:logoutController
+            });
+
+
+
     }
 ]);
 
@@ -127,7 +140,7 @@ app.controller("initialController",function($scope,$http,comSrv,$state,$modal,$r
                     componentId:32,
                     menuId:'adm01_02',
                     menuName:'Manage Employees',
-                    url:'/mgEmployees',
+                    url:'/mgEmployees/mgEmployees.employees',
                     menuList:[]
                 },
                 {
@@ -136,6 +149,13 @@ app.controller("initialController",function($scope,$http,comSrv,$state,$modal,$r
                     menuName:'Manage Restaurants',
                     url:'/mgRestaurants',
                     menuList:[]
+                },
+                {
+                    componentId:34,
+                    menuId:'adm01_04',
+                    menuName:'Manage Domains',
+                    url:'/mgDomains',
+                    menuList:[]
                 }
             ]
         },
@@ -143,9 +163,17 @@ app.controller("initialController",function($scope,$http,comSrv,$state,$modal,$r
             componentId:4,
             menuId:'rpt01',
             moduleName:'Reports',
-            moduleUrl:'/reports',
+            moduleUrl:'',
             imageClass:'fa fa-line-chart',
-            menuList:[]
+            menuList:[
+                {
+                    componentId:41,
+                    menuId:'rpt01_01',
+                    menuName:'Order Reports',
+                    url:'/reports',
+                    menuList:[]
+                }
+            ]
         }
     ];
 

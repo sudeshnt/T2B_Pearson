@@ -11,45 +11,32 @@
         <div class="panel panel-default">
             <table class="table table-striped">
                 <thead>
-                <tr>
-                    <th><input type="checkbox"></th>
-                    <th>Emp.Id</th>
-                    <th>First Name</th>
-                    <th>User Name</th>
-                    <th>Assigned Branch</th>
-                    <th width="1%"></th>
-                </tr>
+                    <tr>
+                        <th>Group Id</th>
+                        <th>Group Name</th>
+                        <th>Group Buying Power</th>
+                        <th>Member Buying Power</th>
+                        <th>Approval Requirement</th>
+                        <th>is Default Group</th>
+                        <th width="1%"></th>
+                        <th width="1%"></th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td><input type="checkbox"></td>
-                    <td>1</td>
-                    <td>Sudesh</td>
-                    <td>sudeshnt93</td>
-                    <td>branch</td>
-                    <!--<td>
-                        <button class="btn btn-primary btn-xs" data-toggle="modal" title="Assign Entitlement"
-                                ng-click="addEntitlement(emp)"><i class="fa fa-plus"></i></button>
-                    </td>-->
+                <tr ng-repeat="group in allGroups">
+                    <td>{{group.groupId}}</td>
+                    <td>{{group.groupName}}</td>
+                    <td>{{group.groupBuyingPower}}</td>
+                    <td>{{group.userDefaultBuyingPower}}</td>
+                    <td>{{group.isApprovalRequred}}</td>
+                    <td>{{group.isDefaultGroup}}</td>
                     <td>
-                        <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#branchModel"
-                                title="Edit Branch Details" ng-click="editDetails(emp)"><i class="fa fa-pencil"></i>
-                        </button>
+                        <button class="btn btn-primary btn-xs" data-toggle="modal" title="Assign Entitlement"
+                                ng-click="addEntitlement()"><i class="fa fa-plus"></i></button>
                     </td>
-                </tr>
-                <tr>
-                    <td><input type="checkbox"></td>
-                    <td>2</td>
-                    <td>Nimesha</td>
-                    <td>nimesha12</td>
-                    <td>branch</td>
-                    <!--<td>
-                        <button class="btn btn-primary btn-xs" data-toggle="modal" title="Assign Entitlement"
-                                ng-click="addEntitlement(emp)"><i class="fa fa-plus"></i></button>
-                    </td>-->
                     <td>
                         <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#branchModel"
-                                title="Edit Branch Details" ng-click="editDetails(emp)"><i class="fa fa-pencil"></i>
+                                title="Edit Branch Details" ng-click="editDetails(group)"><i class="fa fa-pencil"></i>
                         </button>
                     </td>
                 </tr>
@@ -59,13 +46,13 @@
     </div>
 </div>
 
-<script type="text/ng-template" id="employeeModal.html">
+<script type="text/ng-template" id="addGroupModal.html" style="margin-left:10%;">
     <div class="modal-header">
         <button type="button" class="close" ng-click="modalOptions.close()" aria-label="Close"><span
                 aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Manage Employees</h4>
+        <h4 class="modal-title" id="">Add Groups</h4>
     </div>
-    <form role="form" name="frmemp" ng-submit="modalOptions.addUpdateEmployee(frmemp.$valid)" autocomplete="off">
+    <form role="form" name="frmemp" ng-submit="modalOptions.addGroup()" autocomplete="off">
         <div class="row top-toolbar">
             <div class="col-md-9">
             </div>
@@ -81,164 +68,85 @@
         </div>
         <div class="modal-body">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="panel panel-default">
-                        <div class="panel-heading">Profile Details</div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="txtFirstName">First Name<span class="required">*</span></label>
-                                        <input type="text" class="form-control" ng-model="selectedEmployee.firstName"
-                                               id="txtFirstName" placeholder="Eg:Amdan" required="" only-characters>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="txtMiddleName">Middle Name</label>
-                                        <input type="text" class="form-control" ng-model="selectedEmployee.middleName"
-                                               id="txtMiddleName" placeholder="Eg:Dingdong" only-characters>
-                                    </div>
-                                </div>
+                        <div class="panel-heading">Group Details</div>
+                        <div class="panel-body" ng-init="newGroup.corporateId=1">
+                            <div class="form-group">
+                                <label for="groupName">Group Name<span class="required">*</span></label>
+                                <input type="text" class="form-control" ng-model="newGroup.groupName"
+                                       id="groupName" placeholder="Eg:HR Group" required>
                             </div>
                             <div class="form-group">
-                                <label for="txtLastName">Last Name</label>
-                                <input type="text" class="form-control" ng-model="selectedEmployee.lastName"
-                                       id="txtLastName" placeholder="Eg:Singcho" only-characters>
+                                <label for="groupBuyingPower">Group Buying Power (Rs.)<span class="required">*</span></label>
+                                <input type="number" class="form-control" ng-model="newGroup.groupBuyingPower"
+                                       id="groupBuyingPower" placeholder="Eg:4000">
                             </div>
                             <div class="form-group">
-                                <label for="txtMobileNumber">Mobile Number <span class="required">*</span></label>
-                                <input class="form-control" id="txtMobileNumber" ng-model="selectedEmployee.mobile"
-                                       type="text" placeholder="Eg:009477xxxxx" data-phone required>
+                                <label for="empBuyingPower">Member Buying Power<span class="required">*</span></label>
+                                <input type="number" class="form-control" ng-model="newGroup.empBuyingPower"
+                                       id="empBuyingPower" placeholder="Eg:400" required>
                             </div>
                             <div class="form-group">
-                                <label for="txtCountry">Country <span class="required">*</span></label>
-                                <select id="txtCountry" class="form-control" ng-model="selectedEmployee.country"
-                                        required>
-                                    <option value=""></option>
-                                    <option ng-repeat="country in countryList" value="{{country.countryId}}"
-                                            ng-selected="country.countryId==selectedEmployee.country">
-                                        {{country.countryName}}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel panel-default imageUpload">
-                        <div class="panel-heading">Employee Image</div>
-                        <div class="panel-body">
-                            <!--<div flow-init flow-file-added="fileAddedfuntion( $file, $event, $flow )">-->
-                            <!--flow-files-submitted="$flow.upload()" flow-init="{target: '/upload'}" -->
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="{{uploadProgress}}"
-                                     aria-valuemin="0" aria-valuemax="100" style="width: {{uploadProgress}}%;">
-                                    {{uploadProgress}}%
-                                </div>
-                            </div>
-                            <div flow-init
-                                 flow-files-submitted="modalOptions.uploadToS3($files)"
-                                 flow-file-success="$file.msg = $message">
-
-                                <div class="thumbnail" ng-show="!$flow.files.length">
-                                    <img alt="140x140" ng-src="{{empLogo.imageUri}}"
-                                         style="max-width: 200px; height: auto;">
-                                </div>
-                                <div class="thumbnail" ng-show="$flow.files.length">
-                                    <img alt="140x140" class="img-rounded" flow-img="$flow.files[0]"
-                                         style="width: 200px; height: 200px;">
-                                </div>
-                                <div>
-                                    <span class="btn btn-primary btn-sm" ng-show="!$flow.files.length" flow-btn="">Select image<input
-                                            type="file" style="visibility: hidden; position: absolute;"></span>
-                                    <span class="btn btn-info ng-hide btn-sm" ng-show="$flow.files.length" flow-btn="">Change<input
-                                            type="file" style="visibility: hidden; position: absolute;"></span>
-                                    <span class="btn btn-danger ng-hide btn-sm" ng-show="$flow.files.length"
-                                          ng-click="$flow.cancel()">Remove</span>
-                                </div>
+                                <label for="isApprovalRequired">is Approval Required<span class="required">* </span></label>
+                                <input id="isApprovalRequired" ng-model="newGroup.isApprovalRequired" type="checkbox">
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">Login Details</div>
-                        <div class="panel-body">
-                            <div class="form-group">
-                                <label for="txtBranch">Assigned Branch<span class="required">*</span></label>
-                                <select id="txtBranch" class="form-control" ng-model="selectedEmployee.branchId"
-                                        required>
-                                    <option value=""></option>
-                                    <option ng-repeat="branch in branchList" value="{{branch.branchId}}"
-                                            ng-selected="branch.branchId==selectedEmployee.branchId">
-                                        {{branch.branchName}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="txtEmail">Email / User Name<span class="required">*</span></label>
-                                <input class="form-control" id="txtEmail" name="userName"
-                                       ng-model="selectedEmployee.userName" autocomplete="off" type="email"
-                                       placeholder="Eg:user@test.com" required="" readonly
-                                       onfocus="this.removeAttribute('readonly');" >
-                            </div>
-                        </div>
-                    </div>
-                    <!--<form role="form" name="fromChangePwd" ng-submit="modalOptions.changePassword()" autocomplete="off">-->
-                    <div class="panel panel-default">
-                        <div class="panel-heading">Employee Password</div>
-                        <div class="panel-body">
-                            <div class="form-group" ng-form="frmnewpwd">
-                                <label for="txtNewPassword">Password</label>
-                                <input class="form-control" id="txtNewPassword" name="txtNewPassword"
-                                       ng-model="selectedEmployee.password" type="password" autocomplete="off" readonly
-                                       onfocus="this.removeAttribute('readonly')" ng-minlength="7"
-                                       placeholder="xxxxxxxxx">
-                            </div>
-                            <div ng-messages="frmnewpwd.txtNewPassword.$error"
-                                 ng-if="frmemp.$submitted || frmnewpwd.txtNewPassword.$touched">
-                                <div class="errMsg" ng-message="minlength">Password too short. Minimum 7 characters
-                                    needed.
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="txtconfirmPassword">Confirm Password</label>
-                                <input class="form-control" id="txtconfirmPassword" name="confirmPassword"
-                                       ng-model="selectedEmployee.confirmPassword" type="password"
-                                       placeholder="xxxxxxxxx">
-                            </div>
-                            <!--<div ng-messages="frmemp.confirmPassword.$error" ng-if="fromChangePwd.$submitted || fromChangePwd.confirmPassword.$touched">-->
-                            <!--<div ng-message="compareTo">Must Match with Password</div>-->
-                            <!--</div>-->
-                            <a type="button" ng-show="newEmployee" class="btn btn-xs btn-success"
-                               ng-click="modalOptions.changePassword()">Save</a>
-                        </div>
-                    </div>
-                    <!--</form>-->
-                    <div class="panel panel-default" ng-show="otpAuthentication == true">
-                        <div class="panel-heading">Second Factor Authentication</div>
-                        <div class="panel-body">
-                            <div class="form-group">
-                                <div class="btn-group">
-                                    <label class="btn btn-xs btn-primary" ng-model="otpEnableDisable" btn-checkbox
-                                           ng-click="checkEnableDisable()">OTP Enable/Disable</label>
-                                </div>
-                            </div>
-                            <div class="" ng-show="otpAuthenticationOption == true">
-                                <div class="form-group">
-                                    <div class="btn-group">
-                                        <label class="btn  btn-xs btn-success" ng-model="otpMechanism" btn-radio="1"
-                                               ng-change="enableOtpAuthOption()">SMS based OTP</label>
-                                        <label class="btn btn-xs btn-success disabled" ng-model="otpMechanism"
-                                               btn-radio="0"><i class="fa fa-exchange"></i></label>
-                                        <label class="btn  btn-xs btn-success" ng-model="otpMechanism" btn-radio="2"
-                                               ng-change="enableOtpAuthOption()">Google QR based OTP</label>
-                                    </div>
-                                    <img src="{{qrimg}}">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            </div>
+        </div>
+        </div>
+    </form>
+</script>
 
+<script type="text/ng-template" id="editGroupModal.html" style="margin-left:10%;">
+    <div class="modal-header">
+        <button type="button" class="close" ng-click="modalOptions.close()" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="">Edit Group</h4>
+    </div>
+    <form role="form" name="frmemp" ng-submit="modalOptions.editGroup()" autocomplete="off">
+        <div class="row top-toolbar">
+            <div class="col-md-9">
+            </div>
+            <div class="col-md-3 pull-right">
+                <div class="pull-right">
+                    <!--<button class="btn btn-xs btn-default"><i class="fa fa-angle-left"></i> Go back</button> -->
+                    <a class="btn btn-xs btn-default" ng-click="modalOptions.resetForm()">Reset</a>
+                    <!--<button class="btn btn-xs btn-danger">Delete</button> -->
+                    <button class="btn btn-xs btn-success" type="submit" ng-disabled="imageUploadingInProgress">Save
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Group Details</div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="groupName">Group Name<span class="required">*</span></label>
+                                <input type="text" class="form-control" ng-model="updateGroup.groupName"
+                                       id="editGroupName" placeholder="Eg:HR Group" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="groupBuyingPower">Group Buying Power (Rs.)<span class="required">*</span></label>
+                                <input type="number" class="form-control" ng-model="updateGroup.groupBuyingPower"
+                                       id="editGroupBuyingPower" placeholder="Eg:4000">
+                            </div>
+                            <div class="form-group">
+                                <label for="empBuyingPower">Member Buying Power<span class="required">*</span></label>
+                                <input type="number" class="form-control" ng-model="updateGroup.empBuyingPower"
+                                       id="editEmpBuyingPower" placeholder="Eg:400" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="isApprovalRequired">is Approval Required<span class="required">* </span></label>
+                                <input id="editIsApprovalRequired" ng-model="updateGroup.isApprovalRequired" type="checkbox">
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -275,7 +183,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>{{empName}}</label>
+                                        <label></label>
                                     </div>
                                 </div>
                                 <!--<div class="col-md-6">-->
