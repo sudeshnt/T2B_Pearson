@@ -1,0 +1,184 @@
+<form role="form" ng-submit="updateUser()">
+    <div class="row top-toolbar">
+        <div class="col-md-9">
+        </div>
+        <div class="col-md-3 pull-right">
+            <div class="pull-right">
+                <a ng-click="reset()" class="btn btn-xs btn-default">Reset</a>
+                <button type="submit" ng-disabled="imageUploadingInProgress" class="btn btn-xs btn-success">Save
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="row top-sp-md form-area">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">User Profile Details</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="txtFirstName">First Name</label>
+                                <input type="text" class="form-control" ng-model="loginUser.firstName" id="txtFirstName"
+                                       placeholder="Eg:Amdan" only-characters>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="txtMiddleName">Middle Name</label>
+                                <input type="text" class="form-control" ng-model="loginUser.middleName"
+                                       id="txtMiddleName" placeholder="Eg:Dingdong" only-characters>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtLastName">Last Name</label>
+                        <input type="text" class="form-control" ng-model="loginUser.lastName" id="txtLastName"
+                               placeholder="Eg:Singcho" only-characters>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtCountry">Country</label>
+                        <select id="txtCountry" class="form-control" ng-model="loginUser.country">
+                            <option ng-repeat="country in countries" value="{{country.countryId}}"
+                                    ng-selected="country.countryId==loginUser.country">
+                                {{country.countryName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+            <!--<form role="form" ng-submit="" autocomplete="off">-->
+
+            <div class="panel panel-default">
+                <div class="panel-heading">Change Password</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="txtOldPassword">Old Password</label>
+                        <input class="form-control" id="txtOldPassword" ng-model="loginUser.oldPassword" type="password"
+                               placeholder="xxxxxxxxx">
+                    </div>
+
+                    <div class="form-group" ng-form="frmnewpwd">
+                        <label for="txtNewPassword">New Password</label>
+                        <input class="form-control" id="txtNewPassword" name="txtNewPassword"
+                               ng-model="loginUser.newPassword" type="password" placeholder="xxxxxxxxx" ng-minlength="7">
+                    </div>
+                    <div ng-messages="frmnewpwd.txtNewPassword.$error"
+                         ng-if="changePasswordForm.$submitted || frmnewpwd.txtNewPassword.$touched">
+                        <div class="errMsg" ng-message="minlength">Password too short. Minimum 7 characters needed.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtconfirmPassword">Confirm Password</label>
+                        <input class="form-control" id="txtconfirmPassword" ng-model="loginUser.confirmPassword"
+                               type="password" placeholder="xxxxxxxxx">
+                    </div>
+                    <a type="submit" class="btn btn-xs btn-success" ng-click="changePassword()">Save</a>
+                </div>
+            </div>
+            <!--</form>-->
+
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">Contact Details</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="txtMobileNumber">Mobile Number</label>
+                        <input class="form-control" id="txtMobileNumber" ng-model="loginUser.mobile" type="text"
+                               placeholder="Eg:009477xxxxx" data-phone>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtEmail">Email / User Name</label>
+                        <input class="form-control" id="txtEmail" ng-model="loginUser.email" type="email"
+                               placeholder="Eg:user@test.com" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default" ng-show="otpAuthentication == true">
+                <div class="panel-heading">Second Factor Authentication</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <!--<div class="checkbox">-->
+                        <!--<label>-->
+                        <!--<input name="otp" type="checkbox" id="Otp" ng-model="otpEnableDisableCheckBox" ng-click="checkEnableDisable()">Enable/Disable OTP-->
+                        <!--</label>-->
+                        <!--</div>-->
+                        <div class="btn-group">
+                            <label class="btn btn-xs btn-primary" ng-model="otpEnableDisable" btn-checkbox
+                                   ng-click="checkEnableDisable()">OTP Enable/Disable</label>
+                        </div>
+                    </div>
+                    <div class="" ng-show="otpAuthenticationOption == true">
+                        <div class="form-group">
+                            <!--<div class="col-md-6">-->
+                            <!--<div class="radio radio-primary">-->
+                            <!--<input type="radio"  ng-model="smsOtp" name="otp" id="smsOtp" ng-click="checkEnableSmsOtp()">-->
+                            <!--<label for="smsOtp">SMS based OTP</label>-->
+                            <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="col-md-6">-->
+                            <!--<div class="radio radio-primary">-->
+                            <!--<input type="radio" ng-model="googleAuthOtp" name="otp" id="googleAuthOtp" ng-click="checkEnableGoogleAuthOtp()">-->
+                            <!--<label for="googleAuthOtp">Google or QR based OTP</label>-->
+                            <!--</div>-->
+                            <!--<img src="{{qrimg}}">-->
+                            <!--</div>-->
+
+                            <div class="btn-group">
+                                <label class="btn  btn-xs btn-success" ng-model="otpMechanism" btn-radio="1"
+                                       ng-change="enableOtpAuthOption()">SMS based OTP</label>
+                                <label class="btn btn-xs btn-success disabled" ng-model="otpMechanism" btn-radio="0"><i
+                                        class="fa fa-exchange"></i></label>
+                                <label class="btn  btn-xs btn-success" ng-model="otpMechanism" btn-radio="2"
+                                       ng-change="enableOtpAuthOption()">Google QR based OTP</label>
+                            </div>
+                            <img src="{{qrimg}}">
+                        </div>
+
+                    </div>
+                    <!--<pre>{{Url}}<pre>-->
+                    <!--<img src="{{ Url }}" width="100" height="100" >-->
+                </div>
+            </div>
+            <div class="panel panel-default imageUpload">
+                <div class="panel-heading">Profile Picture</div>
+                <div class="panel-body">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="{{uploadProgress}}"
+                             aria-valuemin="0" aria-valuemax="100" style="width: {{uploadProgress}}%;">
+                            {{uploadProgress}}%
+                        </div>
+                    </div>
+                    <div flow-init
+                         flow-files-submitted="uploadToS3($files)"
+                         flow-file-success="$file.msg = $message">
+
+                        <div class="thumbnail" ng-show="!$flow.files.length">
+                            <img alt="140x140" src="{{profileLogo.imageUri}}" style="max-width: 200px; height: auto;">
+                        </div>
+                        <div class="thumbnail" ng-show="$flow.files.length">
+                            <img alt="140x140" class="img-rounded" flow-img="$flow.files[0]"
+                                 style="width: 200px; height: 200px;">
+                        </div>
+                        <div>
+                            <span class="btn btn-primary btn-sm" ng-show="!$flow.files.length"
+                                  flow-btn="">Select image<input type="file"
+                                                                 style="visibility: hidden; position: absolute;"></span>
+                            <span class="btn btn-info ng-hide btn-sm" ng-show="$flow.files.length"
+                                  flow-btn="">Change<input type="file" style="visibility: hidden; position: absolute;"></span>
+                            <span class="btn btn-danger ng-hide btn-sm" ng-show="$flow.files.length"
+                                  ng-click="$flow.cancel()">Remove</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+</div>
+
+
